@@ -59,7 +59,39 @@ class URLAlias extends RestController
      */
     public function loadURLAlias($urlAliasId)
     {
-        return $this->urlAliasService->load($urlAliasId);
+        $urlAlias = $this->urlAliasService->load($urlAliasId);
+
+        $siteAccess = $this->container->get('ezpublish.siteaccess');
+
+        $rootLocationId = $this->container->get('ezpublish.config.resolver')->getParameter(
+            'content.tree_root.location_id',
+            'ezsettings',
+            $siteAccess->name
+        );
+
+        $location = $this->container->get('ezpublish.api.service.location')->loadLocation($rootLocationId);
+
+        $rootUrlAliases = $this->urlAliasService->listLocationAliases($location, false);
+
+        foreach ($rootUrlAliases as $rootUrlAlias) {
+            if (strpos($urlAlias->path, $rootUrlAlias->path) === 0) {
+                $newUrlAliasPath = substr($urlAlias->path, strlen($rootUrlAlias->path));
+
+                return new URLAliasValue([
+                    'id' => $urlAlias->id,
+                    'type' => $urlAlias->type,
+                    'destination' => $urlAlias->destination,
+                    'languageCodes' => $urlAlias->languageCodes,
+                    'alwaysAvailable' => $urlAlias->alwaysAvailable,
+                    'path' => '/' . $newUrlAliasPath,
+                    'isHistory' => $urlAlias->isHistory,
+                    'isCustom' => $urlAlias->isCustom,
+                    'forward' => $urlAlias->forward,
+                ]);
+            }
+        }
+
+        return $urlAlias;
     }
 
     /**
