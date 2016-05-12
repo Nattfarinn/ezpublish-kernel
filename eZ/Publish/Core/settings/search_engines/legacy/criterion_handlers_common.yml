@@ -20,6 +20,7 @@ parameters:
     ezpublish.search.legacy.gateway.criterion_handler.common.remote_id.class: eZ\Publish\Core\Search\Legacy\Content\Common\Gateway\CriterionHandler\RemoteId
     ezpublish.search.legacy.gateway.criterion_handler.common.section_id.class: eZ\Publish\Core\Search\Legacy\Content\Common\Gateway\CriterionHandler\SectionId
     ezpublish.search.legacy.gateway.criterion_handler.common.user_metadata.class: eZ\Publish\Core\Search\Legacy\Content\Common\Gateway\CriterionHandler\UserMetadata
+    ezpublish.search.legacy.gateway.criterion_handler.common.owner_id.class: eZ\Publish\Core\Search\Legacy\Content\Common\Gateway\CriterionHandler\OwnerId
 
     # Criterion field value handler classes
     ezpublish.search.legacy.gateway.criterion_field_value_converter.class: eZ\Publish\Core\Search\Legacy\Content\Common\Gateway\CriterionHandler\FieldValue\Converter
@@ -189,6 +190,13 @@ services:
     ezpublish.search.legacy.gateway.criterion_handler.common.user_metadata:
         parent: ezpublish.search.legacy.gateway.criterion_handler.base
         class: %ezpublish.search.legacy.gateway.criterion_handler.common.user_metadata.class%
+        tags:
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
+            - {name: ezpublish.search.legacy.gateway.criterion_handler.location}
+
+    ezpublish.search.legacy.gateway.criterion_handler.common.owner_id:
+        parent: ezpublish.search.legacy.gateway.criterion_handler.base
+        class: %ezpublish.search.legacy.gateway.criterion_handler.common.owner_id.class%
         tags:
             - {name: ezpublish.search.legacy.gateway.criterion_handler.content}
             - {name: ezpublish.search.legacy.gateway.criterion_handler.location}

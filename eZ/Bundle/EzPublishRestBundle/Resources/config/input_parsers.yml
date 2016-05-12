@@ -64,6 +64,7 @@ parameters:
     ezpublish_rest.input.parser.internal.criterion.Subtree.class: eZ\Publish\Core\REST\Server\Input\Parser\Criterion\Subtree
     ezpublish_rest.input.parser.internal.criterion.UserMetadata.class: eZ\Publish\Core\REST\Server\Input\Parser\Criterion\UserMetadata
     ezpublish_rest.input.parser.internal.criterion.Visibility.class: eZ\Publish\Core\REST\Server\Input\Parser\Criterion\Visibility
+    ezpublish_rest.input.parser.internal.criterion.OwnerId.class: eZ\Publish\Core\REST\Server\Input\Parser\Criterion\OwnerId
 
     ezpublish_rest.input.parser.internal.route_based_limitation.class: eZ\Publish\Core\REST\Server\Input\Parser\Limitation\RouteBasedLimitationParser
     ezpublish_rest.input.parser.internal.path_string_route_based_limitation.class: eZ\Publish\Core\REST\Server\Input\Parser\Limitation\PathStringRouteBasedLimitationParser
@@ -566,6 +567,12 @@ services:
         class: %ezpublish_rest.input.parser.internal.criterion.Visibility.class%
         tags:
             - { name: ezpublish_rest.input.parser, mediaType: application/vnd.ez.api.internal.criterion.Visibility }
+
+    ezpublish_rest.input.parser.internal.criterion.OwnerId:
+        parent: ezpublish_rest.input.parser
+        class: '%ezpublish_rest.input.parser.internal.criterion.OwnerId.class%'
+        tags:
+            - { name: ezpublish_rest.input.parser, mediaType: application/vnd.ez.api.internal.criterion.OwnerId }
 
     # role limitation parsers
 
