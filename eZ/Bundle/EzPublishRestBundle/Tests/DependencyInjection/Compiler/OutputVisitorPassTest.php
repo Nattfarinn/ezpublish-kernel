@@ -53,4 +53,54 @@ class OutputVisitorPassTest extends PHPUnit_Framework_TestCase
         self::assertEquals('ezpublish_rest.output.visitor.test_string', $dispatcherMethodCalls[0][1][1]->__toString());
         self::assertEquals('ezpublish_rest.output.visitor.test_array', $dispatcherMethodCalls[1][1][1]->__toString());
     }
+
+    public function testPriority()
+    {
+        $regexp1 = array('(^.*/.*$)');
+        $regexp2 = array('(^application/.*$)');
+        $regexp3 = array('(^application/json$)');
+        $regexp4 = array('(^application/xml$)');
+
+        $highDefinition = new Definition();
+        $highDefinition->addTag('ezpublish_rest.output.visitor', [
+            'regexps' => [$regexp1],
+            'priority' => 10,
+        ]);
+
+        $lowDefinition = new Definition();
+        $lowDefinition->addTag('ezpublish_rest.output.visitor', [
+            'regexps' => [$regexp2],
+            'priority' => -10,
+        ]);
+
+        $definedNormalDefinition = new Definition();
+        $definedNormalDefinition->addTag('ezpublish_rest.output.visitor', [
+            'regexps' => [$regexp3],
+            'prority' => 0,
+        ]);
+
+        $normalDefinition = new Definition();
+        $normalDefinition->addTag('ezpublish_rest.output.visitor', [
+            'regexps' => [$regexp4],
+        ]);
+
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->addDefinitions([
+            'ezpublish_rest.output.visitor.dispatcher' => new Definition(),
+            'ezpublish_rest.output.visitor.test_defined_normal' => $definedNormalDefinition,
+            'ezpublish_rest.output.visitor.test_low' => $lowDefinition,
+            'ezpublish_rest.output.visitor.test_normal' => $normalDefinition,
+            'ezpublish_rest.output.visitor.test_high' => $highDefinition,
+        ]);
+
+        $compilerPass = new OutputVisitorPass();
+        $compilerPass->process($containerBuilder);
+
+        $dispatcherMethodCalls = $containerBuilder->getDefinition('ezpublish_rest.output.visitor.dispatcher')->getMethodCalls();
+
+        self::assertEquals('ezpublish_rest.output.visitor.test_high', $dispatcherMethodCalls[0][1][1]->__toString());
+        self::assertEquals('ezpublish_rest.output.visitor.test_defined_normal', $dispatcherMethodCalls[1][1][1]->__toString());
+        self::assertEquals('ezpublish_rest.output.visitor.test_normal', $dispatcherMethodCalls[2][1][1]->__toString());
+        self::assertEquals('ezpublish_rest.output.visitor.test_low', $dispatcherMethodCalls[3][1][1]->__toString());
+    }
 }
