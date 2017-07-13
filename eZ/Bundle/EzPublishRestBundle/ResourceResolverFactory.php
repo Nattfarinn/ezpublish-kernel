@@ -4,6 +4,7 @@ namespace eZ\Bundle\EzPublishRestBundle;
 
 use eZ\Publish\Core\REST\Common\RequestParser;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\Core\REST\Server\ResourceResolver;
 
 class ResourceResolverFactory
 {

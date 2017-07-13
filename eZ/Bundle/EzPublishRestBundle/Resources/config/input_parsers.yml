@@ -36,6 +36,9 @@ parameters:
     ezpublish_rest.input.parser.ViewResult.class: eZ\Publish\Core\REST\Client\Input\Parser\ViewResult
     ezpublish_rest.input.parser.SearchHit.class: eZ\Publish\Core\REST\Client\Input\Parser\SearchHit
 
+    ## Simplified REST
+    ezpublish_rest.input.parser.simplified.ContentCreate.class: eZ\Publish\Core\REST\Server\Input\Parser\SimplifiedContentCreate
+
     ezpublish_rest.input.parser.internal.ContentQuery.class: eZ\Publish\Core\REST\Server\Input\Parser\ContentQuery
     ezpublish_rest.input.parser.internal.LocationQuery.class: eZ\Publish\Core\REST\Server\Input\Parser\LocationQuery
     ezpublish_rest.input.parser.internal.criterion.Ancestor.class: eZ\Publish\Core\REST\Server\Input\Parser\Criterion\Ancestor
@@ -130,6 +133,19 @@ services:
             - "@ezpublish_rest.parser_tools"
         tags:
             - { name: ezpublish_rest.input.parser, mediaType: application/vnd.ez.api.ContentCreate }
+
+    ezpublish_rest.input.parser.simplified.ContentCreate:
+        parent: ezpublish_rest.input.parser
+        class: "%ezpublish_rest.input.parser.simplified.ContentCreate.class%"
+        arguments:
+            - "@ezpublish.api.service.content"
+            - "@ezpublish.api.service.content_type"
+            - "@ezpublish_rest.field_type_parser"
+            - "@ezpublish_rest.input.parser.LocationCreate"
+            - "@ezpublish_rest.parser_tools"
+            - "@ezpublish_rest.resource_resolver"
+        tags:
+            - { name: ezpublish_rest.input.parser, mediaType: application/vnd.ez.api.simplified.ContentCreate }
 
     ezpublish_rest.input.parser.ContentUpdate:
         parent: ezpublish_rest.input.parser

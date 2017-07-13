@@ -26,6 +26,7 @@ parameters:
 
     ezpublish_rest.factory.class: eZ\Bundle\EzPublishRestBundle\ApiLoader\Factory
     ezpublish_rest.request_parser.class: eZ\Bundle\EzPublishRestBundle\RequestParser\Router
+    ezpublish_rest.pattern_parser.class: eZ\Publish\Core\REST\Common\RequestParser\EzPublish
     ezpublish_rest.resource_resolver.class: eZ\Publish\Core\REST\Server\ResourceResolver
     ezpublish_rest.resource_resolver.factory.class: eZ\Bundle\EzPublishRestBundle\ResourceResolverFactory
     ezpublish_rest.parser_tools.class: eZ\Publish\Core\REST\Common\Input\ParserTools
@@ -107,6 +108,9 @@ services:
         class: "%ezpublish_rest.request_parser.class%"
         arguments:
             - "@router"
+
+    ezpublish_rest.pattern_parser:
+        class: "%ezpublish_rest.pattern_parser.class%"
 
     ezpublish_rest.parser_tools:
         class: "%ezpublish_rest.parser_tools.class%"

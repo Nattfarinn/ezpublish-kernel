@@ -231,7 +231,13 @@ class Content extends RestController
      */
     public function createContent(Request $request)
     {
-        $contentCreate = $this->parseContentCreate($request);
+        // $contentCreate = $this->parseContentCreate($request);
+        $contentCreate = $this->inputDispatcher->parse(
+            new Message(
+                array('Content-Type' => $request->headers->get('Content-Type')),
+                $request->getContent()
+            )
+        );
 
         try {
             $content = $this->repository->getContentService()->createContent(
@@ -296,36 +302,6 @@ class Content extends RestController
      */
     private function parseSimplifiedContentCreate(Request $request)
     {
-        $input = json_decode($request->getBody(), true);
-
-        if (!isset($input['ContentCreate'])) {
-            throw new BadRequestException("Key 'ContentCreate' missing.");
-        }
-        $input = $input['ContentCreate'];
-
-        $contentCreate = $this->repository->getContentService()->newContentCreateStruct(
-            $this->resourceResolver->resolve($input['ContentType']),
-            // TODO: Retrieve default language code
-            'eng-US'
-        );
-
-        $section = $this->resourceResolver->resolve($input['ContentSection']);
-        $owner = $this->resourceResolver->resolve($input['Owner']);
-
-        $contentCreate->sectionId = $section->id;
-        $contentCreate->ownerId = $owner->id;
-
-        $contentCreate->alwaysAvailable = (bool) $input['alwaysAvailable'];
-        $contentCreate->remoteId = $input['remoteId'];
-        $contentCreate->modificationDate = new \DateTime($input['modificationDate']);
-
-        foreach ($input['fields'] as $languageCode => $fields) {
-            foreach ($fields as $fieldDefIdentifier => $plainValue) {
-                $contentCreate->setField($fieldDefIdentifier, $plainValue, $languageCode);
-            }
-        }
-
-        return $contentCreate;
     }
 
     /**
